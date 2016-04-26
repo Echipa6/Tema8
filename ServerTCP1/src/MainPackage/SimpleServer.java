@@ -6,7 +6,7 @@ import java.net.Socket;
 
 public class SimpleServer {
 	// Define the port on which the server is listening
-	public static final int PORT = 8101;
+	public static final int PORT = 8102;
 	public SimpleServer() throws IOException {
 		ServerSocket serverSocket = null ;
 		Table tablaJoc1=new Table();

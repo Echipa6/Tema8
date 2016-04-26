@@ -5,8 +5,6 @@ import java.util.Vector;
 
 import javax.swing.JTextArea;
 
-import Usefull.HTTPXML;
-
 class Table {
 	private int currentPlayerNumber = -1;
 	 JTextArea textArea;
@@ -15,8 +13,6 @@ class Table {
 	Vector<Client> players;
 	
 	Integer currentPlayer;
-	private String submittedWord;
-	private String wordDefinition;
 	
 	Dictionary dictionary;
 	
@@ -103,12 +99,12 @@ class Table {
 		
 		//notifyClient.out.print(currentPlayer.toString());
 		notifyClient.out.println("notifyme");
-		notifyClient.out.println(word+wordDefinition);
+		notifyClient.out.println(word);
 		notifyClient.out.flush();
 		
 		notifyClient=players.elementAt((currentPlayer+1)%2);
 		notifyClient.out.println("notify");
-		notifyClient.out.println(word+wordDefinition);
+		notifyClient.out.println(word);
 		notifyClient.out.flush();
 	}
 	void processWord(String word)
@@ -119,16 +115,8 @@ class Table {
 			System.out.println(roundPlayer.myTiles.toString());
 			
 			
-			wordDefinition=null;
-			HTTPXML dictionary=new HTTPXML();
-			try {
-				wordDefinition=dictionary.SearchDefinition(word);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
-			System.out.println(word+wordDefinition+"\n Cuvantul este bun ");
+			System.out.println(word+" Cuvantul este bun ");
 			roundPlayer.out.println("wordValid");
 			roundPlayer.out.flush();
 			roundPlayer.removeMyTiles(word);
