@@ -88,6 +88,9 @@ public class GUI {
 		JPanel middlePanel=new JPanel();
 		middlePanel.setPreferredSize(new Dimension(300,300));
 		textArea= new JTextArea();
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		
 		JScrollPane scroll = new JScrollPane(textArea);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -116,7 +119,7 @@ public class GUI {
 		    public void actionPerformed(ActionEvent evt) {
 		        String word=wordToSubmit.getText();
 		        //((ManualSolver)c4.solver).setWordToValidate(word.toUpperCase());
-		        SimpleClient.out.println(word);
+		        SimpleClient.out.println(word.toUpperCase());
 		        
 		       
 		        wordToSubmit.setText("");

@@ -5,6 +5,8 @@ import java.util.Vector;
 
 import javax.swing.JTextArea;
 
+import Usefull.HTTPXML;
+
 class Table {
 	private int currentPlayerNumber = -1;
 	 JTextArea textArea;
@@ -16,6 +18,7 @@ class Table {
 	
 	Dictionary dictionary;
 	
+	public String wordDefinition;
 	
 	public Table()
 	{
@@ -97,14 +100,24 @@ class Table {
 	{
 		Client notifyClient=players.elementAt(currentPlayer);
 		
+		HTTPXML dictionary=new HTTPXML();
+		
+		wordDefinition=null;
+		try {
+			wordDefinition=dictionary.SearchDefinition(word);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//notifyClient.out.print(currentPlayer.toString());
 		notifyClient.out.println("notifyme");
-		notifyClient.out.println(word);
+		notifyClient.out.println(word+wordDefinition);
 		notifyClient.out.flush();
 		
 		notifyClient=players.elementAt((currentPlayer+1)%2);
 		notifyClient.out.println("notify");
-		notifyClient.out.println(word);
+		notifyClient.out.println(word+wordDefinition);
 		notifyClient.out.flush();
 	}
 	void processWord(String word)
