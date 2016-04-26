@@ -16,8 +16,8 @@ public class SimpleClient {
 	
 	public static void main (String[] args) throws IOException {
 		
-		String serverAddress = "192.168.0.103"; // The server's IP address
-		int PORT = 8100; // The server's port
+		String serverAddress = "127.0.0.1"; // The server's IP address
+		int PORT = 8101; // The server's port
 		Socket socket = new Socket(serverAddress, PORT);
 		out =new PrintWriter(socket.getOutputStream(), true);
 		in = new BufferedReader (new InputStreamReader(socket.getInputStream()));

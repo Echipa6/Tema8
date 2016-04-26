@@ -1,0 +1,2 @@
+url=http://www.dictionaryapi.com/api/v1/references/collegiate/xml/[WORD]?key=[KEY]
+key=66d82680-455c-4c80-b932-f627e55c60e4
