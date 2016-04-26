@@ -28,8 +28,8 @@ public class GUI {
 	static JLabel statusLabel;
 
 	public static JFrame mainFrame;
-	private static JTextArea textArea;
-	private static JLabel labelPlayer1;
+	public static JTextArea textArea;
+	static JLabel labelPlayer1;
 	private static JLabel labelPlayer2;
 	private static JLabel labelPlayer3;
 	public static JLabel labelPlayer4;
