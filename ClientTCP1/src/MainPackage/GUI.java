@@ -32,7 +32,7 @@ public class GUI {
 	private static JLabel labelPlayer1;
 	private static JLabel labelPlayer2;
 	private static JLabel labelPlayer3;
-	private static JLabel labelPlayer4;
+	public static JLabel labelPlayer4;
 	
 	private static JTextField  wordToSubmit;
 	private static JButton submit;
