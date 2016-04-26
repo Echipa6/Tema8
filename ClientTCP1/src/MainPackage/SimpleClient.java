@@ -15,14 +15,10 @@ public class SimpleClient {
 	static BufferedReader in;
 	
 	private static Vector<Character> myTiles;
-	public static void setLabelActive()
+	public static void setLabelActive( String tails)
 	{
-		myTiles= new Vector<Character>();
-		myTiles.add('A');
-		myTiles.add('B');
-		myTiles.add('C');
 		
-		GUI.labelPlayer4.setText("<html>"+myTiles.toString()+"<br>__________________<br><font color='red'>Player <br></font></html>");
+		GUI.labelPlayer4.setText("<html>"+tails+"<br>__________________<br><font color='red'>Player <br></font></html>");
 	}
 	
 	
@@ -36,6 +32,10 @@ public class SimpleClient {
 		Scanner keyboard = new Scanner(System.in);
 		 GUI  swingControlDemo = new GUI(); 
 		try {
+			// citesc prima asignare de tail-uri
+			setLabelActive(in.readLine());
+			
+			String response;
 			while(true)
 			{
 				
@@ -44,11 +44,20 @@ public class SimpleClient {
 				//String request = keyboard.next();
 				//out.println(request);
 				// Wait the response from the server ("Hello World!")
-				System.out.println("tralala");
-				String response = in.readLine();
-				System.out.println(response);
-				
-				setLabelActive();
+				//response = in.readLine();
+				if(in.readLine().contentEquals("wordValid"))
+				{
+					System.out.println(" Cuvant valid! Felicitari");
+					response = in.readLine();
+					System.out.println(" Activare");
+					System.out.println(response);
+					setLabelActive(response);
+				}
+				else
+				{
+					System.out.println( "INVALID!");
+				}
+
 				
 			}
 		} catch (UnknownHostException e) {

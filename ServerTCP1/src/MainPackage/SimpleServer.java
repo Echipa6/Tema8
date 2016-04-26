@@ -23,6 +23,8 @@ public class SimpleServer {
 				nrPlayer++;
 				String name="player"+nrPlayer;
 				tablaJoc1.addPlayer(new Client(socket,name));
+				name="player2";
+				//tablaJoc1.addPlayer(new Client(socket,name));
 				System.out.println(tablaJoc1.players.get(0).name);
 				tablaJoc1.startGame();
 			//}

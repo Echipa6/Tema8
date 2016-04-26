@@ -12,19 +12,23 @@ class Table {
 	private BagTiles bagTiles;
 	Vector<Client> players;
 	
+	int currentPlayer=0;
 	
+	Dictionary dictionary;
 	
 	
 	public Table()
 	{
 		try {
 			bagTiles=new BagTiles();
+			dictionary= new Dictionary();
 		} catch (IOException e1) {
 			
 			e1.printStackTrace();
 		}
 		
 		players=new Vector<Client>();
+		
 	}
 	void addPlayer(Client player)
 	{
@@ -41,7 +45,7 @@ class Table {
 			try {
 				Thread.sleep(100000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 		}
@@ -50,6 +54,7 @@ class Table {
 		return bagTiles.getTiles(7-currentNumberTiles);
 		
 	}
+	
 	private void reloadTail(String word)
 	{
 ////		Player currentPlayer=players.elementAt(currentPlayerNumber);
@@ -67,22 +72,80 @@ class Table {
 		
 		// comunicam server client si ii dam runda clientului respectiv 
 		
+		players.elementAt(0).getFirstTails(getMissedTiles(0));
+		//players.elementAt(1).getFirstTails(getMissedTiles(0));
 		
 		while(true)
 		{
 			try {
-				String request=players.elementAt(0).in.readLine();
+				String request=players.elementAt(currentPlayer).in.readLine();
 				String response="Hello "+request;
+				processWord(request);
 				
-				players.elementAt(0).out.println(response+'\n');
-				System.out.println(response);
-				players.elementAt(0).out.flush();
+				
+//				players.elementAt(0).out.println(response+'\n');
+//				System.out.println(response);
+//				players.elementAt(0).out.flush();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
+	}
+	void processWord(String word)
+	{
+		Client roundPlayer=players.elementAt(currentPlayer);
+		if(validate(word))
+		{
+			System.out.println(players.elementAt(0).myTiles.toString());
+			
+			
+			
+			System.out.println(word+" Cuvantul este bun ");
+			players.elementAt(this.currentPlayer).out.println("wordValid");
+			roundPlayer.out.flush();
+			roundPlayer.removeMyTiles(word);
+			roundPlayer.addMyTiles(this.getMissedTiles(roundPlayer.myTiles.size()));
+			roundPlayer.out.println(roundPlayer.myTiles.toString());
+			roundPlayer.out.flush();
+			
+			//currentPlayer=(currentPlayer+1)%2;
+			
+		}
+		else
+		{
+			System.out.println(word+" Cuvantul nu este bun ");
+			roundPlayer.out.println("wordInvalid");
+			roundPlayer.out.flush();
+		}
+	}
+	
+	
+	private boolean validate(String wordToValidate) {
+		boolean ok=true;
+		String auxWord=wordToValidate;
+		Vector<Character> auxTiles=new Vector<Character>(players.elementAt(0).myTiles);
+		if(dictionary.voc.isPrefix(wordToValidate))
+		{
+			for(int i=0;i<auxWord.length();i++)
+			{
+				int index_nr=auxTiles.indexOf(auxWord.charAt(i));
+				if(index_nr==-1)
+				{
+					//System.out.println(auxTiles.toString());
+					System.out.println("nu avem litera"+auxWord.charAt(i));
+					return false;
+				}
+				else
+				{
+					auxTiles.remove(index_nr);
+				}
+
+			
+			}
+			return ok && dictionary.voc.getNode(wordToValidate).isWord();
+		}
+		return false;
 	}
 	
 	
