@@ -28,8 +28,8 @@ public class GUI {
 	static JLabel statusLabel;
 
 	public static JFrame mainFrame;
-	private static JTextArea textArea;
-	private static JLabel labelPlayer1;
+	public static JTextArea textArea;
+	static JLabel labelPlayer1;
 	private static JLabel labelPlayer2;
 	private static JLabel labelPlayer3;
 	public static JLabel labelPlayer4;
@@ -88,9 +88,11 @@ public class GUI {
 		JPanel middlePanel=new JPanel();
 		middlePanel.setPreferredSize(new Dimension(300,300));
 		textArea= new JTextArea();
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
 		JScrollPane scroll = new JScrollPane(textArea);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
+		scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 
 		middlePanel.add(scroll);

@@ -15,10 +15,11 @@ public class SimpleClient {
 	static BufferedReader in;
 	
 	private static Vector<Character> myTiles;
-	public static void setLabelActive( String tails)
+	public static void setLabelActive( String tails )
 	{
 		
 		GUI.labelPlayer4.setText("<html>"+tails+"<br>__________________<br><font color='red'>Player <br></font></html>");
+
 	}
 	
 	
@@ -36,6 +37,7 @@ public class SimpleClient {
 			setLabelActive(in.readLine());
 			
 			String response;
+			String command;
 			while(true)
 			{
 				
@@ -45,7 +47,21 @@ public class SimpleClient {
 				//out.println(request);
 				// Wait the response from the server ("Hello World!")
 				//response = in.readLine();
-				if(in.readLine().contentEquals("wordValid"))
+				command=in.readLine();
+				if(command.contentEquals("notifyme"))
+				{
+					System.out.println("norificare");
+					response=in.readLine();
+					GUI.textArea.append("[Me]"+response+"\n");
+					
+				}
+				if(command.contentEquals("notify"))
+				{
+					System.out.println("norificare");
+					response=in.readLine();
+					GUI.textArea.append("[Player1]"+response+"\n");
+				}
+				if(command.contentEquals("wordValid"))
 				{
 					System.out.println(" Cuvant valid! Felicitari");
 					response = in.readLine();

@@ -14,7 +14,7 @@ class Table {
 	private BagTiles bagTiles;
 	Vector<Client> players;
 	
-	int currentPlayer=0;
+	Integer currentPlayer;
 	private String submittedWord;
 	private String wordDefinition;
 	
@@ -23,6 +23,7 @@ class Table {
 	
 	public Table()
 	{
+		currentPlayer=0;
 		try {
 			bagTiles=new BagTiles();
 			dictionary= new Dictionary();
@@ -77,7 +78,7 @@ class Table {
 		// comunicam server client si ii dam runda clientului respectiv 
 		
 		players.elementAt(0).getFirstTails(getMissedTiles(0));
-		//players.elementAt(1).getFirstTails(getMissedTiles(0));
+		players.elementAt(1).getFirstTails(getMissedTiles(0));
 		
 		while(true)
 		{
@@ -96,12 +97,26 @@ class Table {
 		}
 		
 	}
+	public void notifyAll2(String word)
+	{
+		Client notifyClient=players.elementAt(currentPlayer);
+		
+		//notifyClient.out.print(currentPlayer.toString());
+		notifyClient.out.println("notifyme");
+		notifyClient.out.println(word+wordDefinition);
+		notifyClient.out.flush();
+		
+		notifyClient=players.elementAt((currentPlayer+1)%2);
+		notifyClient.out.println("notify");
+		notifyClient.out.println(word+wordDefinition);
+		notifyClient.out.flush();
+	}
 	void processWord(String word)
 	{
 		Client roundPlayer=players.elementAt(currentPlayer);
 		if(validate(word))
 		{
-			System.out.println(players.elementAt(0).myTiles.toString());
+			System.out.println(roundPlayer.myTiles.toString());
 			
 			
 			wordDefinition=null;
@@ -114,14 +129,16 @@ class Table {
 			}
 			
 			System.out.println(word+wordDefinition+"\n Cuvantul este bun ");
-			players.elementAt(this.currentPlayer).out.println("wordValid");
+			roundPlayer.out.println("wordValid");
 			roundPlayer.out.flush();
 			roundPlayer.removeMyTiles(word);
 			roundPlayer.addMyTiles(this.getMissedTiles(roundPlayer.myTiles.size()));
 			roundPlayer.out.println(roundPlayer.myTiles.toString());
 			roundPlayer.out.flush();
 			
-			//currentPlayer=(currentPlayer+1)%2;
+			notifyAll2(word);
+			currentPlayer=(currentPlayer+1)%2;
+			
 			
 		}
 		else
@@ -136,7 +153,7 @@ class Table {
 	private boolean validate(String wordToValidate) {
 		boolean ok=true;
 		String auxWord=wordToValidate;
-		Vector<Character> auxTiles=new Vector<Character>(players.elementAt(0).myTiles);
+		Vector<Character> auxTiles=new Vector<Character>(players.elementAt(currentPlayer).myTiles);
 		if(dictionary.voc.isPrefix(wordToValidate))
 		{
 			for(int i=0;i<auxWord.length();i++)
