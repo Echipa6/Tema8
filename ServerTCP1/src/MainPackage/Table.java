@@ -10,24 +10,29 @@ class Table {
 	 JTextArea textArea;
 	private boolean available = false;
 	private BagTiles bagTiles;
-	Vector<Player> players;
+	Vector<Client> players;
 	
 	
-	public Table( JTextArea textArea)
+	
+	
+	public Table()
 	{
-		this.textArea=textArea;
 		try {
 			bagTiles=new BagTiles();
 		} catch (IOException e1) {
 			
 			e1.printStackTrace();
 		}
-		players= new Vector<Player>();
+		
+		players=new Vector<Client>();
 	}
-	void addPlayer(Player player)
+	void addPlayer(Client player)
 	{
 		players.add(player);
 	}
+	
+	
+	
 	public Vector<Character> getMissedTiles(int currentNumberTiles)
 	{ 
 		if(bagTiles.bag.isEmpty())
@@ -47,77 +52,40 @@ class Table {
 	}
 	private void reloadTail(String word)
 	{
-		Player currentPlayer=players.elementAt(currentPlayerNumber);
-		System.out.println("Player"+(currentPlayerNumber+1)+" "+word);
-		this.textArea.append("Player"+(currentPlayerNumber+1)+" "+word+'\n');
-		currentPlayer.gainScore(word.length()*5);
-		currentPlayer.removeMyTiles(word);
-
-		currentPlayer.addMyTiles(getMissedTiles(currentPlayer.getNumberTiles()));
+////		Player currentPlayer=players.elementAt(currentPlayerNumber);
+////		System.out.println("Player"+(currentPlayerNumber+1)+" "+word);
+////		this.textArea.append("Player"+(currentPlayerNumber+1)+" "+word+'\n');
+////		currentPlayer.gainScore(word.length()*5);
+////		currentPlayer.removeMyTiles(word);
+//
+//		currentPlayer.addMyTiles(getMissedTiles(currentPlayer.getNumberTiles()));
 		
-	}
-	private void playRound()
-	{
-		
-		Player currentPlayer=players.elementAt(currentPlayerNumber);
-		
-		currentPlayer.addMyTiles(getMissedTiles(currentPlayer.getNumberTiles()));
-		currentPlayer.setLabelActive();
-		
-		String s="";
-		int i=0;
-		while(s.isEmpty())
-		{
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			s=currentPlayer.solver.getWord(currentPlayer.getMyTiles());
-			//System.out.println(i++);
-			
-		}
-		if(currentPlayerNumber==3){
-			((ManualSolver)currentPlayer.solver).wordToValidate="";
-		}
-		reloadTail(s);
-		
-		
-		currentPlayer.endTurn();
 	}
 	
-	public synchronized int get(int consNumber) {
-		while (!(available && currentPlayerNumber==consNumber)) {
+	
+	public void startGame() {
+		
+		// comunicam server client si ii dam runda clientului respectiv 
+		
+		
+		while(true)
+		{
 			try {
-				wait();
-				// Asteapta arbitrul sa puna o valoare
-			} catch (InterruptedException e) {
+				String request=players.elementAt(0).in.readLine();
+				String response="Hello "+request;
+				
+				players.elementAt(0).out.println(response+'\n');
+				System.out.println(response);
+				players.elementAt(0).out.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		available = false;
-		//System.out.println(	"Consumatorul "+consNumber+" primit:\t" + currentPlayerNumber);
-		playRound();
-		
-		
-		notifyAll();
-		return currentPlayerNumber;
 	}
-	public synchronized void put(int number) {
-		while (available) {
-			try {
-				wait();
-				// Asteapta jucatorul sa preia valoarea
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		this.currentPlayerNumber = number;
-		available = true;
-		//System.out.println("Producatorul a pus:\t" + number);
-		notifyAll();
-	}
+	
+	
 }
 
 
