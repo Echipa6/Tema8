@@ -7,11 +7,23 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class SimpleClient {
 	
 	static PrintWriter out;
 	static BufferedReader in;
+	
+	private static Vector<Character> myTiles;
+	public static void setLabelActive()
+	{
+		myTiles= new Vector<Character>();
+		myTiles.add('A');
+		myTiles.add('B');
+		myTiles.add('C');
+		
+		GUI.labelPlayer4.setText("<html>"+myTiles.toString()+"<br>__________________<br><font color='red'>Player <br></font></html>");
+	}
 	
 	
 	public static void main (String[] args) throws IOException {
@@ -32,8 +44,11 @@ public class SimpleClient {
 				//String request = keyboard.next();
 				//out.println(request);
 				// Wait the response from the server ("Hello World!")
-				String response = in.readLine ();
+				System.out.println("tralala");
+				String response = in.readLine();
 				System.out.println(response);
+				
+				setLabelActive();
 				
 			}
 		} catch (UnknownHostException e) {
