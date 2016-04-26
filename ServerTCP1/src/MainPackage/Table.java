@@ -5,6 +5,8 @@ import java.util.Vector;
 
 import javax.swing.JTextArea;
 
+import Usefull.HTTPXML;
+
 class Table {
 	private int currentPlayerNumber = -1;
 	 JTextArea textArea;
@@ -13,6 +15,8 @@ class Table {
 	Vector<Client> players;
 	
 	int currentPlayer=0;
+	private String submittedWord;
+	private String wordDefinition;
 	
 	Dictionary dictionary;
 	
@@ -100,8 +104,16 @@ class Table {
 			System.out.println(players.elementAt(0).myTiles.toString());
 			
 			
+			wordDefinition=null;
+			HTTPXML dictionary=new HTTPXML();
+			try {
+				wordDefinition=dictionary.SearchDefinition(word);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			System.out.println(word+" Cuvantul este bun ");
+			System.out.println(word+wordDefinition+"\n Cuvantul este bun ");
 			players.elementAt(this.currentPlayer).out.println("wordValid");
 			roundPlayer.out.flush();
 			roundPlayer.removeMyTiles(word);

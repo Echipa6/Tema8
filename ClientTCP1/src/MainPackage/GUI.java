@@ -116,7 +116,7 @@ public class GUI {
 		    public void actionPerformed(ActionEvent evt) {
 		        String word=wordToSubmit.getText();
 		        //((ManualSolver)c4.solver).setWordToValidate(word.toUpperCase());
-		        SimpleClient.out.println(word);
+		        SimpleClient.out.println(word.toUpperCase());
 		        
 		       
 		        wordToSubmit.setText("");
