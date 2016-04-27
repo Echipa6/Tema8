@@ -23,7 +23,7 @@ public class SimpleServer {
 				socket= serverSocket.accept();
 			
 				tablaJoc1.addPlayer(new Client(socket,tablaJoc1.nrPlayers,"manual"));
-				System.out.println(tablaJoc1.players.get(0).name);
+				
 				
 				tablaJoc1.addPlayer(new Client(null,tablaJoc1.nrPlayers,"automat"));
 				tablaJoc1.addPlayer(new Client(null,tablaJoc1.nrPlayers,"automat"));

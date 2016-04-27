@@ -78,55 +78,70 @@ class Table {
 		System.out.println("inception");
 		for(Client player : players )
 		{
-			player.out.println("inception");
-			player.out.flush();
-
-			String name = null;
-			try {
-				name=player.in.readLine();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(!name.isEmpty())
+			if(player.type.contentEquals("manual"))
 			{
-				player.name=name;
+				player.out.println("inception");
+				player.out.flush();
+
+				String name = null;
+				try {
+					name=player.in.readLine();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(!name.isEmpty())
+				{
+					player.name=name;
+				}
+
+				System.out.println(player.name);
+
+				player.out.write(player.number);
+				System.out.println("am trimis la client numarul:"+ player.number);
+				player.out.flush();
+
+				player.getFirstTails(getMissedTiles(0));
 			}
-
-			System.out.println(player.name);
-
-			player.out.write(player.number);
-			System.out.println("am trimis la client numarul:"+ player.number);
-			player.out.flush();
-
-			player.getFirstTails(getMissedTiles(0));
-
+			else
+			{
+				System.out.println("playerul automat");
+				player.addMyTiles(getMissedTiles(0));
+			}
 
 		}
 	}
 
 	public void meeting()
 	{
-		for(Client player : players)
+		//for(Client player : players)
+		for(int i=0;i<2;i++)
 		{
-			player.out.println("meeting");
-			player.out.flush();
+			Client player=players.elementAt(i);
 
-			for(Client playerSent:players)
+			if(player.type.compareTo("manual")==0);
 			{
-				player.out.println("player");
+				System.out.println(player.type.compareTo("manual"));
+				System.out.println(player.name+" "+player.type);
+				player.out.println("meeting");
 				player.out.flush();
+				
+				for(Client playerSent:players)
+				{
+					player.out.println("player");
+					player.out.flush();
 
-				player.out.write(playerSent.number);
+					player.out.write(playerSent.number);
+					player.out.flush();
+
+					player.out.println(playerSent.name);
+					player.out.flush();
+
+
+				}
+				player.out.println("end");
 				player.out.flush();
-
-				player.out.println(playerSent.name);
-				player.out.flush();
-
-
 			}
-			player.out.println("end");
-			player.out.flush();
 		}
 	}
 	public void startGame() {
@@ -139,8 +154,17 @@ class Table {
 		{
 
 			try {
+				String request=null;
 				startRound(currentPlayer.intValue());
-				String request=players.elementAt(currentPlayer).in.readLine();
+				if(players.elementAt(currentPlayer).type.contentEquals("manual"))
+				{
+					request=players.elementAt(currentPlayer).in.readLine();
+				}
+				else
+				{
+					request=players.elementAt(currentPlayer).automatSolver.getWord(players.elementAt(currentPlayer).myTiles);
+				}
+
 				processWord(request);
 
 				endRound();
@@ -156,13 +180,15 @@ class Table {
 
 		for(Client player : players )
 		{
-			player.out.println("turn");
-			player.out.flush();
+			if(player.type.contentEquals("manual"))
+			{
+				player.out.println("turn");
+				player.out.flush();
 
 
-			player.out.write(currentPlayer);
-			player.out.flush();
-
+				player.out.write(currentPlayer);
+				player.out.flush();
+			}
 
 		}
 
@@ -171,9 +197,11 @@ class Table {
 
 		for(Client player : players )
 		{
-			player.out.println("endTurn");
-			player.out.flush();
-
+			if(player.type.contentEquals("manual"))
+			{
+				player.out.println("endTurn");
+				player.out.flush();
+			}
 
 		}
 
@@ -196,10 +224,14 @@ class Table {
 
 		//notifyClient.out.print(currentPlayer.toString());
 		for(Client  notifyClient:players)
-		{
-			notifyClient.out.println("notify");
-			notifyClient.out.println("["+players.get(currentPlayer).name+"]"+word+"\t"+wordDefinition);
-			notifyClient.out.flush();
+		{ 
+			if(notifyClient.type.contentEquals("manual"))
+
+			{
+				notifyClient.out.println("notify");
+				notifyClient.out.println("["+players.get(currentPlayer).name+"]"+word+"\t"+wordDefinition);
+				notifyClient.out.flush();
+			}
 		}
 	}
 	void processWord(String word)
@@ -209,19 +241,23 @@ class Table {
 		{
 			System.out.println(roundPlayer.myTiles.toString());
 
-
-
 			System.out.println(word+" Cuvantul este bun ");
-			roundPlayer.out.println("wordValid");
-			roundPlayer.out.flush();
+			if(roundPlayer.type.contentEquals("manual"))
+			{
+
+				roundPlayer.out.println("wordValid");
+				roundPlayer.out.flush();
+			}
 			roundPlayer.removeMyTiles(word);
 			roundPlayer.addMyTiles(this.getMissedTiles(roundPlayer.myTiles.size()));
-			roundPlayer.out.println(roundPlayer.myTiles.toString());
-			roundPlayer.out.flush();
-
+			if(roundPlayer.type.contentEquals("manual"))
+			{
+				roundPlayer.out.println(roundPlayer.myTiles.toString());
+				roundPlayer.out.flush();
+			}
 			notifyAll2(word);
 
-			currentPlayer=(currentPlayer+1)%2;
+			currentPlayer=(currentPlayer+1)%4;
 
 
 		}

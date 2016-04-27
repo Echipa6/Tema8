@@ -14,7 +14,7 @@ class Client{
 	public Socket socket = null ;
 	public BufferedReader in;
 	public PrintWriter out;
-	private AutomatSolver automatSolver;
+	public AutomatSolver automatSolver;
 	public String name;
 	public int number;
 	public Vector<Character> myTiles;
@@ -26,26 +26,27 @@ class Client{
 		{
 			automatSolver=new AutomatSolver();
 			this.name="Pc"+nr;
+			System.out.println("Am creat un jucatoru Automat"+this.name);
+			
 		}
 		else
-		{
+		{	
 			this.name="Player"+nr;
 			this.number=nr;
 			this.socket = socket ;
+			try {
+				this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				this.out = new PrintWriter(socket.getOutputStream());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("Am creat un jucatoru manual"+this.name);
+			
 		}
 		
 		myTiles= new Vector<Character>();
-		this.name="Player"+nr;
-		this.number=nr;
-		this.socket = socket ;
-
-		try {
-			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			this.out = new PrintWriter(socket.getOutputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.number=nr;		
 
 	}
 	public void addMyTiles(Vector<Character> randomTiles) {
