@@ -10,23 +10,24 @@ public class SimpleServer {
 	public SimpleServer() throws IOException {
 		ServerSocket serverSocket = null ;
 		Table tablaJoc1=new Table();
-		int nrPlayer=0;
+		
 		serverSocket = new ServerSocket(PORT);
 		try {
 			
 			//while (true) {
 				System.out.println ("Waiting for a client ...");
 				
-				Socket socket = serverSocket.accept();
-				// Execute the client's request in a new thread
+				Socket socket = serverSocket.accept();			
 				
-				nrPlayer++;
-				String name="player"+nrPlayer;
-				tablaJoc1.addPlayer(new Client(socket,name));
-				name="player2";
+				tablaJoc1.addPlayer(new Client(socket,tablaJoc1.nrPlayers,"manual"));
 				socket= serverSocket.accept();
-				tablaJoc1.addPlayer(new Client(socket,name));
+			
+				tablaJoc1.addPlayer(new Client(socket,tablaJoc1.nrPlayers,"manual"));
 				System.out.println(tablaJoc1.players.get(0).name);
+				
+				tablaJoc1.addPlayer(new Client(null,tablaJoc1.nrPlayers,"automat"));
+				tablaJoc1.addPlayer(new Client(null,tablaJoc1.nrPlayers,"automat"));
+				
 				tablaJoc1.startGame();
 			//}
 		} catch (IOException e) {

@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,15 +31,12 @@ public class GUI {
 
 	public static JFrame mainFrame;
 	public static JTextArea textArea;
-	static JLabel labelPlayer1;
-	private static JLabel labelPlayer2;
-	private static JLabel labelPlayer3;
-	public static JLabel labelPlayer4;
+	public static Vector<JLabelPlayer> playersLabels;
 	
 	private static JTextField  wordToSubmit;
-	private static JButton submit;
+	public static JButton submit;
 	GUI(){
-
+		playersLabels=new Vector<JLabelPlayer>();
 		mainFrame = new JFrame("Word Game");
 		mainFrame.setSize(width,height);
 		mainFrame.setResizable(false);
@@ -46,33 +45,48 @@ public class GUI {
 
 		mainFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent){
+				
+				
 				System.exit(0);
 			}        
 		});
 
 		
 	   
-	   
+		JLabelPlayer labelPlayer1;
+		
 		ImageIcon imageIcon = new ImageIcon("PlayerLeft.png");
-		labelPlayer1=new JLabel("Player1",imageIcon,JLabel.CENTER);
+		labelPlayer1=new JLabelPlayer("Player1",imageIcon,JLabel.CENTER);
 		labelPlayer1.setHorizontalAlignment(JLabel.CENTER);
-
+		
+		playersLabels.add(labelPlayer1);
 		
 		
+		
+		
+		JLabelPlayer labelPlayer2;
 		imageIcon = new ImageIcon("PlayerTop.png");
-		labelPlayer2=new JLabel("Player2",imageIcon,JLabel.CENTER);
+		labelPlayer2=new JLabelPlayer("Player2",imageIcon,JLabel.CENTER);
 		labelPlayer2.setHorizontalAlignment(JLabel.CENTER);
-
+ 
+		playersLabels.add(labelPlayer2);
 		
+		
+		JLabelPlayer labelPlayer3;
+				
 		imageIcon = new ImageIcon("PlayerRight.png");
-		labelPlayer3=new JLabel("Player3",imageIcon,JLabel.CENTER);
+		labelPlayer3=new JLabelPlayer("Player3",imageIcon,JLabel.CENTER);
 		labelPlayer3.setHorizontalAlignment(JLabel.CENTER);
 
+		playersLabels.add(labelPlayer3);
 		
 		JPanel playerBottomPanel =new JPanel();
 		
-		labelPlayer4=new JLabel("Player4");
+		JLabelPlayer labelPlayer4;
+		labelPlayer4=new JLabelPlayer("Player4");
 		labelPlayer4.setHorizontalAlignment(JLabel.CENTER);
+		
+		playersLabels.add(labelPlayer4);
 		
 		wordToSubmit= new JTextField(10);
 		wordToSubmit.setVisible(true);
@@ -126,6 +140,22 @@ public class GUI {
 		    }
 		}
 		);
+		
+		mainFrame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                System.out.println("Closed");
+                try {
+					SimpleClient.socket.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                e.getWindow().dispose();
+            }
+        });
 		
 		mainFrame.setVisible(true); 
 	}

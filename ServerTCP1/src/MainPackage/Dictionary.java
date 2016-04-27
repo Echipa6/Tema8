@@ -14,7 +14,7 @@ public class Dictionary {
 	public Map<String, Integer> map;
 	public LowercaseTrieVocabulary voc;
 
-	Dictionary() throws IOException
+	public Dictionary() throws IOException
 	{
 		map = new HashMap<String, Integer>();
 		voc=new LowercaseTrieVocabulary();

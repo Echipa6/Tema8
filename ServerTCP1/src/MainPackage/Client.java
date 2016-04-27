@@ -7,27 +7,46 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Vector;
 
+import Usefull.AutomatSolver;
+
 class Client{
+	public String type;
 	public Socket socket = null ;
-	public String name; 
 	public BufferedReader in;
 	public PrintWriter out;
+	private AutomatSolver automatSolver;
+	public String name;
+	public int number;
 	public Vector<Character> myTiles;
 
-	public Client (Socket socket,String name) 
+	public Client (Socket socket,int nr, String type ) 
 	{
-		myTiles= new Vector<Character>();
-		this.name=name;
+		this.type=type;
+		if (type.contentEquals("automat"))
+		{
+			automatSolver=new AutomatSolver();
+			this.name="Pc"+nr;
+		}
+		else
+		{
+			this.name="Player"+nr;
+			this.number=nr;
 			this.socket = socket ;
-			
-			try {
-				this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				this.out = new PrintWriter(socket.getOutputStream());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		}
 		
+		myTiles= new Vector<Character>();
+		this.name="Player"+nr;
+		this.number=nr;
+		this.socket = socket ;
+
+		try {
+			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			this.out = new PrintWriter(socket.getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	public void addMyTiles(Vector<Character> randomTiles) {
 		while(!randomTiles.isEmpty())
@@ -52,7 +71,7 @@ class Client{
 		addMyTiles(randomTail);
 		out.println(myTiles.toString());
 		out.flush();
-		
+
 	}
 
 
@@ -63,6 +82,6 @@ class Client{
 	public void setMyTiles(Vector<Character> myTiles) {
 		this.myTiles = myTiles;
 	}
-	
+
 
 }

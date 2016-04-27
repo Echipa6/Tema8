@@ -8,39 +8,41 @@ import javax.swing.JTextArea;
 import Usefull.HTTPXML;
 
 class Table {
-	private int currentPlayerNumber = -1;
-	 JTextArea textArea;
+	public int nrPlayers;
+	JTextArea textArea;
 	private boolean available = false;
 	private BagTiles bagTiles;
 	Vector<Client> players;
-	
+
 	Integer currentPlayer;
-	
+
 	Dictionary dictionary;
-	
+
 	public String wordDefinition;
-	
+
 	public Table()
 	{
+		nrPlayers=0;
 		currentPlayer=0;
 		try {
 			bagTiles=new BagTiles();
 			dictionary= new Dictionary();
 		} catch (IOException e1) {
-			
+
 			e1.printStackTrace();
 		}
-		
+
 		players=new Vector<Client>();
-		
+
 	}
 	void addPlayer(Client player)
 	{
+		nrPlayers++;
 		players.add(player);
 	}
-	
-	
-	
+
+
+
 	public Vector<Character> getMissedTiles(int currentNumberTiles)
 	{ 
 		if(bagTiles.bag.isEmpty())
@@ -54,54 +56,136 @@ class Table {
 			}
 		}
 
-		
+
 		return bagTiles.getTiles(7-currentNumberTiles);
-		
+
 	}
-	
+
 	private void reloadTail(String word)
 	{
-////		Player currentPlayer=players.elementAt(currentPlayerNumber);
-////		System.out.println("Player"+(currentPlayerNumber+1)+" "+word);
-////		this.textArea.append("Player"+(currentPlayerNumber+1)+" "+word+'\n');
-////		currentPlayer.gainScore(word.length()*5);
-////		currentPlayer.removeMyTiles(word);
-//
-//		currentPlayer.addMyTiles(getMissedTiles(currentPlayer.getNumberTiles()));
-		
+		////		Player currentPlayer=players.elementAt(currentPlayerNumber);
+		////		System.out.println("Player"+(currentPlayerNumber+1)+" "+word);
+		////		this.textArea.append("Player"+(currentPlayerNumber+1)+" "+word+'\n');
+		////		currentPlayer.gainScore(word.length()*5);
+		////		currentPlayer.removeMyTiles(word);
+		//
+		//		currentPlayer.addMyTiles(getMissedTiles(currentPlayer.getNumberTiles()));
+
 	}
-	
-	
+
+	public void inception()
+	{
+		System.out.println("inception");
+		for(Client player : players )
+		{
+			player.out.println("inception");
+			player.out.flush();
+
+			String name = null;
+			try {
+				name=player.in.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(!name.isEmpty())
+			{
+				player.name=name;
+			}
+
+			System.out.println(player.name);
+
+			player.out.write(player.number);
+			System.out.println("am trimis la client numarul:"+ player.number);
+			player.out.flush();
+
+			player.getFirstTails(getMissedTiles(0));
+
+
+		}
+	}
+
+	public void meeting()
+	{
+		for(Client player : players)
+		{
+			player.out.println("meeting");
+			player.out.flush();
+
+			for(Client playerSent:players)
+			{
+				player.out.println("player");
+				player.out.flush();
+
+				player.out.write(playerSent.number);
+				player.out.flush();
+
+				player.out.println(playerSent.name);
+				player.out.flush();
+
+
+			}
+			player.out.println("end");
+			player.out.flush();
+		}
+	}
 	public void startGame() {
-		
+
 		// comunicam server client si ii dam runda clientului respectiv 
-		
-		players.elementAt(0).getFirstTails(getMissedTiles(0));
-		players.elementAt(1).getFirstTails(getMissedTiles(0));
-		
+
+		inception();
+		meeting();	
 		while(true)
 		{
+
 			try {
+				startRound(currentPlayer.intValue());
 				String request=players.elementAt(currentPlayer).in.readLine();
-				String response="Hello "+request;
 				processWord(request);
-				
-				
-//				players.elementAt(0).out.println(response+'\n');
-//				System.out.println(response);
-//				players.elementAt(0).out.flush();
+
+				endRound();
+
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
+	private void startRound(int currentPlayer) {
+
+		for(Client player : players )
+		{
+			player.out.println("turn");
+			player.out.flush();
+
+
+			player.out.write(currentPlayer);
+			player.out.flush();
+
+
+		}
+
+	}
+	private void endRound() {
+
+		for(Client player : players )
+		{
+			player.out.println("endTurn");
+			player.out.flush();
+
+
+		}
+
+	}
+
+
 	public void notifyAll2(String word)
 	{
-		Client notifyClient=players.elementAt(currentPlayer);
-		
+
+
 		HTTPXML dictionary=new HTTPXML();
-		
+
 		wordDefinition=null;
 		try {
 			wordDefinition=dictionary.SearchDefinition(word);
@@ -109,16 +193,14 @@ class Table {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		//notifyClient.out.print(currentPlayer.toString());
-		notifyClient.out.println("notifyme");
-		notifyClient.out.println(word+wordDefinition);
-		notifyClient.out.flush();
-		
-		notifyClient=players.elementAt((currentPlayer+1)%2);
-		notifyClient.out.println("notify");
-		notifyClient.out.println(word+wordDefinition);
-		notifyClient.out.flush();
+		for(Client  notifyClient:players)
+		{
+			notifyClient.out.println("notify");
+			notifyClient.out.println("["+players.get(currentPlayer).name+"]"+word+"\t"+wordDefinition);
+			notifyClient.out.flush();
+		}
 	}
 	void processWord(String word)
 	{
@@ -126,9 +208,9 @@ class Table {
 		if(validate(word))
 		{
 			System.out.println(roundPlayer.myTiles.toString());
-			
-			
-			
+
+
+
 			System.out.println(word+" Cuvantul este bun ");
 			roundPlayer.out.println("wordValid");
 			roundPlayer.out.flush();
@@ -136,11 +218,12 @@ class Table {
 			roundPlayer.addMyTiles(this.getMissedTiles(roundPlayer.myTiles.size()));
 			roundPlayer.out.println(roundPlayer.myTiles.toString());
 			roundPlayer.out.flush();
-			
+
 			notifyAll2(word);
+
 			currentPlayer=(currentPlayer+1)%2;
-			
-			
+
+
 		}
 		else
 		{
@@ -149,8 +232,8 @@ class Table {
 			roundPlayer.out.flush();
 		}
 	}
-	
-	
+
+
 	private boolean validate(String wordToValidate) {
 		boolean ok=true;
 		String auxWord=wordToValidate;
@@ -171,14 +254,14 @@ class Table {
 					auxTiles.remove(index_nr);
 				}
 
-			
+
 			}
 			return ok && dictionary.voc.getNode(wordToValidate).isWord();
 		}
 		return false;
 	}
-	
-	
+
+
 }
 
 
