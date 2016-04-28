@@ -3,14 +3,11 @@ package MainPackage;
 import java.io.IOException;
 import java.util.Vector;
 
-import javax.swing.JTextArea;
-
 import Usefull.HTTPXML;
 
 class Table {
 	public int nrPlayers;
-	JTextArea textArea;
-	private boolean available = false;
+
 	private BagTiles bagTiles;
 	Vector<Client> players;
 
@@ -45,31 +42,10 @@ class Table {
 
 	public Vector<Character> getMissedTiles(int currentNumberTiles)
 	{ 
-		if(bagTiles.bag.isEmpty())
-		{
-			this.textArea.append("GAME OVER! The bag is empty.");
-			try {
-				Thread.sleep(100000);
-			} catch (InterruptedException e) {
-
-				e.printStackTrace();
-			}
-		}
+		
 
 
 		return bagTiles.getTiles(7-currentNumberTiles);
-
-	}
-
-	private void reloadTail(String word)
-	{
-		////		Player currentPlayer=players.elementAt(currentPlayerNumber);
-		////		System.out.println("Player"+(currentPlayerNumber+1)+" "+word);
-		////		this.textArea.append("Player"+(currentPlayerNumber+1)+" "+word+'\n');
-		////		currentPlayer.gainScore(word.length()*5);
-		////		currentPlayer.removeMyTiles(word);
-		//
-		//		currentPlayer.addMyTiles(getMissedTiles(currentPlayer.getNumberTiles()));
 
 	}
 
@@ -87,13 +63,9 @@ class Table {
 				try {
 					name=player.in.readLine();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if(!name.isEmpty())
-				{
-					player.name=name;
-				}
+				player.name=name;
 
 				System.out.println(player.name);
 
@@ -218,7 +190,7 @@ class Table {
 		try {
 			wordDefinition=dictionary.SearchDefinition(word);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
@@ -230,6 +202,7 @@ class Table {
 			{
 				notifyClient.out.println("notify");
 				notifyClient.out.println("["+players.get(currentPlayer).name+"]"+word+"\t"+wordDefinition);
+				notifyClient.out.write(word.length()*5);
 				notifyClient.out.flush();
 			}
 		}
@@ -249,7 +222,20 @@ class Table {
 				roundPlayer.out.flush();
 			}
 			roundPlayer.removeMyTiles(word);
-			roundPlayer.addMyTiles(this.getMissedTiles(roundPlayer.myTiles.size()));
+			if(bagTiles.bag.isEmpty())
+			{
+				roundPlayer.out.println("EmptyBag");
+				roundPlayer.out.flush();
+				
+				roundPlayer=players.elementAt((currentPlayer+1)%2);
+				
+				roundPlayer.out.println("EmptyBag");
+				roundPlayer.out.flush();
+			}
+			else
+			{
+				roundPlayer.addMyTiles(this.getMissedTiles(roundPlayer.myTiles.size()));
+			}
 			if(roundPlayer.type.contentEquals("manual"))
 			{
 				roundPlayer.out.println(roundPlayer.myTiles.toString());
@@ -271,7 +257,6 @@ class Table {
 
 
 	private boolean validate(String wordToValidate) {
-		boolean ok=true;
 		String auxWord=wordToValidate;
 		Vector<Character> auxTiles=new Vector<Character>(players.elementAt(currentPlayer).myTiles);
 		if(dictionary.voc.isPrefix(wordToValidate))
@@ -281,7 +266,6 @@ class Table {
 				int index_nr=auxTiles.indexOf(auxWord.charAt(i));
 				if(index_nr==-1)
 				{
-					//System.out.println(auxTiles.toString());
 					System.out.println("nu avem litera"+auxWord.charAt(i));
 					return false;
 				}
@@ -292,7 +276,7 @@ class Table {
 
 
 			}
-			return ok && dictionary.voc.getNode(wordToValidate).isWord();
+			return dictionary.voc.getNode(wordToValidate).isWord();
 		}
 		return false;
 	}

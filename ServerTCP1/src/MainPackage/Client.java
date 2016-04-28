@@ -38,7 +38,6 @@ class Client{
 				this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				this.out = new PrintWriter(socket.getOutputStream());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("Am creat un jucatoru manual"+this.name);
