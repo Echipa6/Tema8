@@ -135,16 +135,7 @@ public class SimpleClient {
 
 			
 			setLabel(name,numberPlayer);
-			//				if(numberPlayer==3)
-			//				{
-			//					setLabel(name,number);
-			//				}
-			//				else
-			//				{
-			//					setLabel(name,numberPlayer);
-			//				}
-
-			//			}
+			
 		}
 
 
