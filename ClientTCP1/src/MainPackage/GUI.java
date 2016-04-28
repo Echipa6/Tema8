@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -35,6 +36,7 @@ public class GUI {
 	
 	private static JTextField  wordToSubmit;
 	public static JButton submit;
+	
 	GUI(){
 		playersLabels=new Vector<JLabelPlayer>();
 		mainFrame = new JFrame("Word Game");
@@ -160,33 +162,31 @@ public class GUI {
 		mainFrame.setVisible(true); 
 	}
 
-//	GUI()
-//	{
-//
-//	mainFrame = new JFrame("Java Swing Examples");
-//	mainFrame.setSize(500,400);
-//	mainFrame.setLayout(new BorderLayout());
-//	mainFrame.addWindowListener(new WindowAdapter() {
-//		public void windowClosing(WindowEvent windowEvent){
-//			System.exit(0);
-//		}        
-//	});
-//	Button startButton = new Button("Start");
-//	 startButton.addActionListener(new ActionListener() {
-//         public void actionPerformed(ActionEvent e) {
-//        	 
-//          		  System.out.println("mutare invalida");
-//          		SimpleClient.out.println("mutare invalida");
-//          	  }
-//         });
-//	mainFrame.add(startButton,BorderLayout.CENTER);
-//    mainFrame.add(new Button("Connect"),BorderLayout.NORTH);
-//    mainFrame.setVisible(true); 
-//	}
-	
+
 	public static void main(String[] args){
 	      GUI  swingControlDemo = new GUI();      
 	       
 	   }
+	
+	public static void shiftLabels(int number) {
+		
+		 int timesShifted = 0;
+		
+		while (timesShifted < 3-number)
+		{
+
+			JLabelPlayer aux;
+			aux=playersLabels.get(0);
+			for(int j=0; j<3;j++)
+			{
+				playersLabels.set(j, playersLabels.get(j+1));
+			}
+			playersLabels.set(3,aux);
+			timesShifted++;
+		}
+		
+		//for(int i=0; i<4;i++)
+		
+	}
 
 }

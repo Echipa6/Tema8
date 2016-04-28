@@ -23,37 +23,30 @@ public class SimpleClient {
 	private static Vector<Character> myTiles;
 	public static void setLabel(String name, int nrPlayer)
 	{
-		GUI.playersLabels.elementAt(nrPlayer).setName(name);
-		GUI.playersLabels.elementAt(nrPlayer).setText("<html>"+"<br>__________________<br><font color='blue'>"+name+"<br></font></html>");
-
+		if(nrPlayer!=number)
+		{
+			GUI.playersLabels.elementAt(nrPlayer).setName(name);
+			GUI.playersLabels.elementAt(nrPlayer).setText("<html>"+"<br>__________________<br><font color='blue'>"+name+"<br></font></html>");
+		}
 	}
 	public static void setLabelFirst( String tails)
 	{
 
-		GUI.playersLabels.elementAt(3).setText("<html>"+tails+"<br>__________________<br>"+GUI.playersLabels.elementAt(3).getName()+"<br></font></html>");
-		GUI.playersLabels.elementAt(3).setForeground(Color.blue);
+		GUI.playersLabels.elementAt(number).setText("<html>"+tails+"<br>__________________<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></font></html>");
+		GUI.playersLabels.elementAt(number).setForeground(Color.blue);
 
 	}
 
 	public static void setLabelActive(int number)
 	{
-		if(number==3)
-		{
-			GUI.playersLabels.elementAt(SimpleClient.number).setText("<html>[X,X,X,X,X,X,X]<br>__________________<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></font></html>");
-			GUI.playersLabels.elementAt(SimpleClient.number).setForeground(Color.red);
-
-		}
-		else
-		{
-			GUI.playersLabels.elementAt(number).setText("<html>[X,X,X,X,X,X,X]<br>__________________<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></font></html>");
-			GUI.playersLabels.elementAt(number).setForeground(Color.red);
-		}
+		GUI.playersLabels.elementAt(number).setText("<html>[X,X,X,X,X,X,X]<br>__________________<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></font></html>");
+		GUI.playersLabels.elementAt(number).setForeground(Color.red);
 
 
 	}
 	private static void colorRedLabel() {
 
-		GUI.playersLabels.elementAt(3).setForeground(Color.red);
+		GUI.playersLabels.elementAt(number).setForeground(Color.red);
 	}
 
 
@@ -124,10 +117,6 @@ public class SimpleClient {
 					System.out.println(response);
 					setLabelFirst(response);
 				}
-				else
-				{
-					System.out.println( "INVALID!");
-				}
 
 
 			}
@@ -144,18 +133,18 @@ public class SimpleClient {
 			int numberPlayer=in.read();
 			String name=in.readLine();
 
-			if(numberPlayer!=number)
-			{
-				if(numberPlayer==3)
-				{
-					setLabel(name,number);
-				}
-				else
-				{
-					setLabel(name,numberPlayer);
-				}
+			
+			setLabel(name,numberPlayer);
+			//				if(numberPlayer==3)
+			//				{
+			//					setLabel(name,number);
+			//				}
+			//				else
+			//				{
+			//					setLabel(name,numberPlayer);
+			//				}
 
-			}
+			//			}
 		}
 
 
@@ -170,10 +159,12 @@ public class SimpleClient {
 		SimpleClient.out.println(namePlayer);
 		name=namePlayer;
 		SimpleClient.out.flush();
-		GUI.playersLabels.elementAt(3).setName(name);
 		number=in.read();
-		setLabelFirst(in.readLine());
+		GUI.shiftLabels(number);
+		GUI.playersLabels.elementAt(number).setName(name);
 		
+		setLabelFirst(in.readLine());
+
 		System.out.println("Eu sunt jucatorul cu numarul: "+number);
 
 	}
