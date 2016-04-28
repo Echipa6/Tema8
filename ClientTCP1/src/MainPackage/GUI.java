@@ -49,6 +49,8 @@ public class GUI {
 			public void windowClosing(WindowEvent windowEvent){
 				
 				
+				
+				
 				System.exit(0);
 			}        
 		});

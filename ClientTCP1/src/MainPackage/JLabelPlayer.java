@@ -22,16 +22,18 @@ public class JLabelPlayer extends JLabel{
 		this.score = score;
 	}
 
-	int score;
+	public int score;
 	
 	public JLabelPlayer(String string, ImageIcon imageIcon, int center) {
 		
 	  super(string,imageIcon,center);
+	  score=0;
 	  
 	}
 
 	public JLabelPlayer(String string) {
 		super(string);
+		score=0;
 	}
 
 }

@@ -20,26 +20,27 @@ public class SimpleClient {
 	public static String name;
 	public static int number;
 	public static int turnPlayer;
-	private static Vector<Character> myTiles;
+	private static String myTiles;
+	private static Vector<Integer> score;
 	public static void setLabel(String name, int nrPlayer)
 	{
 		if(nrPlayer!=number)
 		{
 			GUI.playersLabels.elementAt(nrPlayer).setName(name);
-			GUI.playersLabels.elementAt(nrPlayer).setText("<html>"+"<br>__________________<br><font color='blue'>"+name+"<br></font></html>");
+			GUI.playersLabels.elementAt(nrPlayer).setText("<html>"+"<br>__________________<br>Score: "+score.get(nrPlayer) +"<br><font color='blue'>"+name+"<br></font></html>");
 		}
 	}
 	public static void setLabelFirst( String tails)
 	{
-
-		GUI.playersLabels.elementAt(number).setText("<html>"+tails+"<br>__________________<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></font></html>");
+		myTiles=tails;
+		GUI.playersLabels.elementAt(number).setText("<html>"+tails+"<br>__________________<br>Score: "+score.get(number)+"<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></html>");
 		GUI.playersLabels.elementAt(number).setForeground(Color.blue);
 
 	}
 
 	public static void setLabelActive(int number)
 	{
-		GUI.playersLabels.elementAt(number).setText("<html>[X,X,X,X,X,X,X]<br>__________________<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></font></html>");
+		GUI.playersLabels.elementAt(number).setText("<html>[X,X,X,X,X,X,X]<br>__________________<br>Score: "+score.get(number)+"<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></html>");
 		GUI.playersLabels.elementAt(number).setForeground(Color.red);
 
 
@@ -59,10 +60,15 @@ public class SimpleClient {
 		in = new BufferedReader (new InputStreamReader(socket.getInputStream()));
 		Scanner keyboard = new Scanner(System.in);
 		GUI  swingControlDemo = new GUI();
+		score= new Vector<Integer>();
+		
+		score.add(0);
+		score.add(0);
+		score.add(0);
+		score.add(0);
+		
 		try {
-			// citesc prima asignare de tail-uri
-			//
-
+		
 			String response;
 			String command;
 			turnPlayer = 0;
@@ -85,7 +91,7 @@ public class SimpleClient {
 				{
 					turnPlayer=in.read();
 					System.out.println("incepe runda jucatorului:"+turnPlayer);
-
+					
 					if(turnPlayer==number)
 					{
 						GUI.submit.setEnabled(true);
@@ -96,19 +102,41 @@ public class SimpleClient {
 						GUI.submit.setEnabled(false);
 						setLabelActive(turnPlayer);
 					}
+						
 
 				}
 				if(command.contentEquals("endTurn"))
 				{
 					for(int i=0; i<4;i++)
 					{
+						if(i==number)
+						{
+							GUI.playersLabels.elementAt(number).setText("<html>"+myTiles+"<br>__________________<br>Score: "+score.get(number)+"<br>"+GUI.playersLabels.elementAt(number).getName()+"<br></html>");
+						}
+						else
+						{
+							GUI.playersLabels.elementAt(i).setText("<html>[X,X,X,X,X,X,X]<br>__________________<br>Score: "+score.get(i)+"<br>"+GUI.playersLabels.elementAt(i).getName()+"<br></html>");
+						}
 						GUI.playersLabels.elementAt(i).setForeground(Color.blue);
 					}
 				}
 				if(command.contentEquals("notify"))
 				{
-					System.out.println("norificare");
+					System.out.println("notificare");
 					response=in.readLine();
+					GUI.textArea.append(response+"\n\n");
+					int aux=in.read();
+					score.set(turnPlayer, aux+score.get(turnPlayer));
+				}
+				if(command.contentEquals("EmptyBag"))
+				{
+					GUI.textArea.append("GAME OVER"+"\n\n");
+				}
+				
+				if(command.contentEquals("0exit"))
+				{
+					response="Celalalt jucator a iesit din joc. ne pare rau dar nu mai puteti continua jocul.";
+					System.out.println(response);
 					GUI.textArea.append(response+"\n\n");
 				}
 				if(command.contentEquals("wordValid"))
@@ -117,6 +145,8 @@ public class SimpleClient {
 					System.out.println(response);
 					setLabelFirst(response);
 				}
+				
+				
 
 
 			}
@@ -135,7 +165,6 @@ public class SimpleClient {
 
 			
 			setLabel(name,numberPlayer);
-			
 		}
 
 
