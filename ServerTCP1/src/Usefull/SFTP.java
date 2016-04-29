@@ -19,7 +19,6 @@ public class SFTP {
 	 *
 	 */
 	public SFTP() {
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -55,7 +54,6 @@ public class SFTP {
 			channelSftp = (ChannelSftp)channel;
 			channelSftp.cd(SFTPWORKINGDIR);
 			
-			System.out.println(System.getProperty("user.dir"));
 			
 			File f = new File("report.html");
 			//File d= new File("theme.css");

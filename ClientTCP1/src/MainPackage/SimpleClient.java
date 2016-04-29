@@ -76,7 +76,13 @@ public class SimpleClient {
 			{
 
 				System.out.println("enter an value");
-				command=in.readLine();
+				command=null;
+				try{
+					command=in.readLine();
+				}catch(Exception e)
+				{
+					
+				}
 				if(command.contentEquals("inception"))
 				{
 					inception();

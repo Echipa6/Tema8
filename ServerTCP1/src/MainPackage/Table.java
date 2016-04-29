@@ -8,7 +8,7 @@ import Usefull.HTTPXML;
 import Usefull.RaportGenerator;
 import Usefull.SFTP;
 
-class Table {
+class Table extends Thread {
 	public int nrPlayers;
 
 	private BagTiles bagTiles;
@@ -130,7 +130,7 @@ class Table {
 			}
 		}
 	}
-	public void startGame() {
+	public void run() {
 
 		// comunicam server client si ii dam runda clientului respectiv 
 
@@ -151,7 +151,7 @@ class Table {
 						writeScore();
 						raport.finishRaport();
 						SFTP.uploadRaport();
-						System.exit(0);
+						return;
 					}
 				}
 				else
