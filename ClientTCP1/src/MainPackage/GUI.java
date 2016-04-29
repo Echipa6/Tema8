@@ -48,7 +48,7 @@ public class GUI {
 		mainFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent){
 				
-				
+				SimpleClient.out.println("0exit");
 				
 				
 				System.exit(0);

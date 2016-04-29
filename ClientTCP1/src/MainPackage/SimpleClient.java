@@ -130,7 +130,9 @@ public class SimpleClient {
 				}
 				if(command.contentEquals("EmptyBag"))
 				{
+
 					GUI.textArea.append("GAME OVER"+"\n\n");
+
 				}
 				
 				if(command.contentEquals("0exit"))
@@ -144,6 +146,11 @@ public class SimpleClient {
 					response = in.readLine();
 					System.out.println(response);
 					setLabelFirst(response);
+				}
+				if(command.contentEquals("wordInvalid"))
+				{
+					GUI.textArea.append("Word Invalid!\n");
+
 				}
 				
 				

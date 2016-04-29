@@ -1,35 +1,49 @@
 package MainPackage;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Vector;
 
 import Usefull.HTTPXML;
+import Usefull.RaportGenerator;
+import Usefull.SFTP;
 
 class Table {
 	public int nrPlayers;
 
 	private BagTiles bagTiles;
 	Vector<Client> players;
+	Vector<Integer> score;
 
 	Integer currentPlayer;
 
 	Dictionary dictionary;
 
 	public String wordDefinition;
+	RaportGenerator raport;
+	
 
 	public Table()
 	{
 		nrPlayers=0;
 		currentPlayer=0;
+		
 		try {
 			bagTiles=new BagTiles();
 			dictionary= new Dictionary();
+			raport= new RaportGenerator();
 		} catch (IOException e1) {
 
 			e1.printStackTrace();
 		}
 
 		players=new Vector<Client>();
+		score= new Vector<Integer>();
+		
+		score.add(0);
+		score.add(0);
+		score.add(0);
+		score.add(0);
 
 	}
 	void addPlayer(Client player)
@@ -131,13 +145,24 @@ class Table {
 				if(players.elementAt(currentPlayer).type.contentEquals("manual"))
 				{
 					request=players.elementAt(currentPlayer).in.readLine();
+					if(request.contentEquals("0exit"))
+					{
+						System.out.println("Un client a iesit");
+						writeScore();
+						raport.finishRaport();
+						SFTP.uploadRaport();
+						System.exit(0);
+					}
 				}
 				else
 				{
 					request=players.elementAt(currentPlayer).automatSolver.getWord(players.elementAt(currentPlayer).myTiles);
 				}
-
-				processWord(request);
+				try{
+					processWord(request);
+				}catch(ArrayIndexOutOfBoundsException e){
+					
+				}
 
 				endRound();
 
@@ -204,12 +229,50 @@ class Table {
 				notifyClient.out.println("["+players.get(currentPlayer).name+"]"+word+"\t"+wordDefinition);
 				notifyClient.out.write(word.length()*5);
 				notifyClient.out.flush();
+				
 			}
 		}
+		score.set(currentPlayer, score.get(currentPlayer)+word.length()*5);
+		raport.addWord(players.get(currentPlayer).name, word, wordDefinition);
+	}
+	void writeScore()
+	{
+		Vector<Integer> sortScore= new Vector<Integer>();
+		sortScore=(Vector)score.clone();
+		Collections.sort(sortScore);
+		String top="";
+		for(int i=0;i<sortScore.size()-1;i++)
+		{
+			if(sortScore.get(i)==sortScore.get(i+1))
+			{
+				sortScore.removeElementAt(i);
+			}
+		}
+		if(sortScore.get(0)==sortScore.get(1))
+		{
+			sortScore.removeElementAt(0);
+		}
+		for(int i=sortScore.size()-1;i>=0;i--)
+		{
+			for(int j=0;j<score.size();j++)
+			{
+				if(sortScore.get(i)==score.get(j))
+				{
+					top+=(players.elementAt(j).name+" a obtinut scorul "+score.get(j)+"<br>");
+				}
+			}
+		}
+		raport.addScore(top);
 	}
 	void processWord(String word)
 	{
 		Client roundPlayer=players.elementAt(currentPlayer);
+		if(word==null)
+		{
+			roundPlayer.out.println("wordInvalid");
+			roundPlayer.out.flush();
+			return;
+		}
 		if(validate(word))
 		{
 			System.out.println(roundPlayer.myTiles.toString());
@@ -222,8 +285,16 @@ class Table {
 				roundPlayer.out.flush();
 			}
 			roundPlayer.removeMyTiles(word);
+
 			if(bagTiles.bag.isEmpty())
 			{
+				try {
+					writeScore();
+					raport.finishRaport();
+					SFTP.uploadRaport();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				roundPlayer.out.println("EmptyBag");
 				roundPlayer.out.flush();
 				
@@ -249,7 +320,6 @@ class Table {
 		}
 		else
 		{
-			System.out.println(word+" Cuvantul nu este bun ");
 			roundPlayer.out.println("wordInvalid");
 			roundPlayer.out.flush();
 		}

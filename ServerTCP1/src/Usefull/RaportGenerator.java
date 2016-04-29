@@ -30,7 +30,17 @@ public class RaportGenerator {
 			creaeDefPag(definition);
 			closeDiv();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void addScore(String topScore)
+	{
+		try {
+			openDiv();
+			bw.append("\t <h5>Game Top: </h5>");
+			creaeDefPag(topScore);
+			closeDiv();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

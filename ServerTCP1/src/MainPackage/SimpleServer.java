@@ -14,7 +14,7 @@ public class SimpleServer {
 		serverSocket = new ServerSocket(PORT);
 		try {
 			
-			//while (true) {
+
 				System.out.println ("Waiting for a client ...");
 				
 				Socket socket = serverSocket.accept();			
@@ -29,7 +29,7 @@ public class SimpleServer {
 				tablaJoc1.addPlayer(new Client(null,tablaJoc1.nrPlayers,"automat"));
 				
 				tablaJoc1.startGame();
-			//}
+	
 		} catch (IOException e) {
 			System.err. println ("Ooops... " + e);
 		} finally {
